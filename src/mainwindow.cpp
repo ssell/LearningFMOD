@@ -128,6 +128,7 @@ void MainWindow::setState( FMOD_STATE st )
             ui->radioOutputALSA->setEnabled( false );
             ui->radioOutputESD->setEnabled( false );
             ui->radioOutputOSS->setEnabled( false );
+            ui->spinRecordLength->setEnabled( false );
         }
         else if( st == PLAYING )
         {
@@ -141,6 +142,7 @@ void MainWindow::setState( FMOD_STATE st )
             ui->radioOutputALSA->setEnabled( false );
             ui->radioOutputESD->setEnabled( false );
             ui->radioOutputOSS->setEnabled( false );
+            ui->spinRecordLength->setEnabled( false );
         }
     }
 
@@ -158,6 +160,7 @@ void MainWindow::setState( FMOD_STATE st )
             ui->radioOutputALSA->setEnabled( true );
             ui->radioOutputESD->setEnabled( true );
             ui->radioOutputOSS->setEnabled( true );
+            ui->spinRecordLength->setEnabled( true );
         }
     }
 
@@ -175,6 +178,7 @@ void MainWindow::setState( FMOD_STATE st )
             ui->radioOutputALSA->setEnabled( true );
             ui->radioOutputESD->setEnabled( true );
             ui->radioOutputOSS->setEnabled( true );
+            ui->spinRecordLength->setEnabled( true );
         }
     }
 
@@ -187,7 +191,17 @@ void MainWindow::updateInfoPanel( )
 {
     if( state == RECORDING )
     {
-        ui->labelLength->setText( QString::number( time->elapsed( ) ) );
+        unsigned elapsed = time->elapsed( );
+
+        if( elapsed >= ( ui->spinRecordLength->value( ) * 1000 ) )
+        {
+            ui->labelLength->setText( QString::number( ( ui->spinRecordLength->value( ) * 1000 ) ) );
+            ui->buttonStop->click( );
+        }
+        else
+        {
+            ui->labelLength->setText( QString::number( time->elapsed( ) ) );
+        }
     }
     else if( state == PLAYING )
     {
@@ -271,7 +285,7 @@ void MainWindow::buttonRecordClicked( )
         std::cout << "ERROR: fmodSystemInit failed! [" << status << "]" << std::endl;
     }
 
-    status = fmodCreateSound( system, &sound );
+    status = fmodCreateSound( system, &sound, ui->spinRecordLength->value( ) );
 
     if( status != OK )
     {
@@ -312,18 +326,11 @@ void MainWindow::buttonStopClicked( )
             std::cout << "> " << FMOD_ErrorString( fmod_result ) << std::endl;
         }
 
-        lastLength = time->elapsed( );
+        lastLength = ( time->elapsed( ) > ( ui->spinRecordLength->value( ) * 1000 ) ? ( ui->spinRecordLength->value( ) * 1000 ) : time->elapsed( ) );
         ui->labelLength->setText( QString::number( lastLength ) );
 
         delete [ ] time;
         time = 0;
-
-        //------------------------------------------------
-        // Write to file
-
-        std::stringstream filename;
-        filename << ui->editFilename->text( ).toLocal8Bit( ).data( ) << ".wav";
-        SaveToWav( sound, filename.str( ).c_str( ) );
     }
     else if( state == PLAYING )
     {
@@ -331,6 +338,18 @@ void MainWindow::buttonStopClicked( )
     }
 
     setState( IDLE );
+}
+
+//------------------------------------------------------------------------------------------
+
+void MainWindow::buttonWriteClicked( )
+{
+    if( sound != 0 )
+    {
+        std::stringstream filename;
+        filename << ui->editFilename->text( ).toLocal8Bit( ).data( ) << ".wav";
+        SaveToWav( sound, filename.str( ).c_str( ) );
+    }
 }
 
 //------------------------------------------------------------------------------------------
@@ -391,6 +410,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect( ui->buttonRecord, SIGNAL( clicked( ) ), this, SLOT( buttonRecordClicked( ) ) );
     connect( ui->buttonStop, SIGNAL( clicked( ) ), this, SLOT( buttonStopClicked( ) ) );
     connect( ui->buttonPlayback, SIGNAL( clicked( ) ), this, SLOT( buttonPlaybackClicked( ) ) );
+    connect( ui->buttonWrite, SIGNAL( clicked( ) ), this, SLOT( buttonWriteClicked( ) ) );
     connect( timer, SIGNAL( timeout( ) ), this, SLOT( updateInfoPanel( ) ) );
 }
 

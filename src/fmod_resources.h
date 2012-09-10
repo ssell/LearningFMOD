@@ -10,7 +10,7 @@
 
 //------------------------------------------------------------------------------------------
 
-#define MAX_NUM_CHANNELS 1
+#define MAX_NUM_CHANNELS      1
 
 //------------------------------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ enum FMOD_STATE
 void   DEBUG_OUT( const char* );
 STATUS fmodSetup( FMOD::System** system );
 STATUS fmodSystemInit( FMOD::System* system );
-STATUS fmodCreateSound( FMOD::System* system, FMOD::Sound** sound );
+STATUS fmodCreateSound( FMOD::System* system, FMOD::Sound** sound, unsigned max_length );
 STATUS fmodSetOutputType( FMOD::System* system, OUTPUT_TYPE output = OSS );
 STATUS fmodSetPlaybackDriver( FMOD::System* system, unsigned playback_driver );
 

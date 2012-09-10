@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>320</height>
+    <height>400</height>
    </rect>
   </property>
   <property name="maximumSize">
    <size>
     <width>800</width>
-    <height>320</height>
+    <height>600</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -83,17 +83,17 @@ QPushButton
     <widget class="QPushButton" name="buttonBoth">
      <property name="geometry">
       <rect>
-       <x>400</x>
+       <x>320</x>
        <y>36</y>
-       <width>161</width>
+       <width>141</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>9</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <pointsize>7</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="text">
@@ -103,17 +103,17 @@ QPushButton
     <widget class="QPushButton" name="buttonRecord">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>20</x>
        <y>36</y>
-       <width>161</width>
+       <width>141</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>9</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <pointsize>7</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="text">
@@ -126,17 +126,17 @@ QPushButton
      </property>
      <property name="geometry">
       <rect>
-       <x>220</x>
+       <x>170</x>
        <y>36</y>
-       <width>161</width>
+       <width>141</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>9</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <pointsize>7</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="text">
@@ -149,31 +149,51 @@ QPushButton
      </property>
      <property name="geometry">
       <rect>
-       <x>580</x>
+       <x>470</x>
        <y>36</y>
-       <width>161</width>
+       <width>141</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>9</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <pointsize>7</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb( 200, 100, 100 );</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>STOP</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="buttonWrite">
+     <property name="geometry">
+      <rect>
+       <x>620</x>
+       <y>36</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>7</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Write to Disk</string>
      </property>
     </widget>
    </widget>
    <widget class="QFrame" name="frameOutput">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>410</x>
       <y>240</y>
       <width>381</width>
       <height>71</height>
@@ -250,9 +270,9 @@ QPushButton
    <widget class="QFrame" name="frameDriver">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>240</y>
-      <width>391</width>
+      <x>10</x>
+      <y>320</y>
+      <width>381</width>
       <height>71</height>
      </rect>
     </property>
@@ -286,7 +306,7 @@ QPushButton
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>371</width>
+       <width>361</width>
        <height>31</height>
       </rect>
      </property>
@@ -396,7 +416,7 @@ QPushButton
       </rect>
      </property>
      <property name="text">
-      <string>0 s</string>
+      <string>0</string>
      </property>
     </widget>
     <widget class="QLabel" name="labelSize">
@@ -409,7 +429,7 @@ QPushButton
       </rect>
      </property>
      <property name="text">
-      <string>0 B</string>
+      <string>0</string>
      </property>
     </widget>
    </widget>
@@ -439,6 +459,126 @@ QPushButton
      <string>ms</string>
     </property>
    </widget>
+   <widget class="QFrame" name="frameOutput_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>240</y>
+      <width>381</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="label_13">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>361</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Max Record Length</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_15">
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>40</y>
+       <width>31</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>sec</string>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinRecordLength">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>34</y>
+       <width>181</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>99999999</number>
+     </property>
+     <property name="value">
+      <number>10</number>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="frameDriver_2">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>320</y>
+      <width>381</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="label_14">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>371</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Playback Driver</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="driverSelectPlayback">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>361</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <zorder>frameButtons</zorder>
+   <zorder>frameOutput</zorder>
+   <zorder>frameDriver</zorder>
+   <zorder>frameInfo</zorder>
+   <zorder>label_6</zorder>
+   <zorder>label_7</zorder>
+   <zorder>frameOutput_3</zorder>
+   <zorder>frameOutput_2</zorder>
+   <zorder>frameDriver_2</zorder>
+   <zorder>label</zorder>
+   <zorder>label_2</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

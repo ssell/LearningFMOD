@@ -75,7 +75,7 @@ STATUS fmodSystemInit( FMOD::System* system )
 
 //------------------------------------------------------------------------------------------
 
-STATUS fmodCreateSound( FMOD::System* system, FMOD::Sound** sound )
+STATUS fmodCreateSound( FMOD::System* system, FMOD::Sound** sound, unsigned max_length )
 {
     if( system == 0 )
     {
@@ -92,7 +92,7 @@ STATUS fmodCreateSound( FMOD::System* system, FMOD::Sound** sound )
     exInfo.numchannels      = 3;
     exInfo.format           = FMOD_SOUND_FORMAT_PCM16;
     exInfo.defaultfrequency = 44100;
-    exInfo.length           = exInfo.defaultfrequency * sizeof( short ) * exInfo.numchannels * 5;
+    exInfo.length           = exInfo.defaultfrequency * sizeof( short ) * exInfo.numchannels * max_length;
 
     result = system->createSound( 0, FMOD_2D | FMOD_SOFTWARE | FMOD_OPENUSER, &exInfo, sound );
 

@@ -33,6 +33,7 @@ private slots:
     void buttonStopClicked( );
     void buttonPlaybackClicked( );
     void updateInfoPanel( );
+    void buttonWriteClicked( );
     
 private:
     Ui::MainWindow *ui;
