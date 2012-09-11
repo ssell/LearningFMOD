@@ -7,105 +7,8 @@
 #include "fmod_resources.h"
 
 #include <iostream>
-#include <cstdlib>
-#include <cstdio>
 #include <QDateTime>
 #include <sstream>
-
-#if defined(WIN32) || defined(__WATCOMC__) || defined(_WIN32) || defined(__WIN32__)
-    #define __PACKED                         /* dummy */
-#else
-    #define __PACKED __attribute__((packed)) /* gcc packed */
-#endif
-
-//------------------------------------------------------------------------------------------
-
-void SaveToWav(FMOD::Sound *sound, const char* file_name )
-{
-    FILE *fp;
-    int             channels, bits;
-    float           rate;
-    void           *ptr1, *ptr2;
-    unsigned int    lenbytes, len1, len2;
-    std::cout << "hello!" << std::endl;
-    if (!sound)
-    {
-        return;
-    }
-    std::cout << "hi!" << std::endl;
-    sound->getFormat  (0, 0, &channels, &bits);
-    sound->getDefaults(&rate, 0, 0, 0);
-    sound->getLength  (&lenbytes, FMOD_TIMEUNIT_PCMBYTES);
-
-    std::cout << "bits: " << bits << "\nchannels: " << channels << "\nrate:" << rate << "\nlength: " << lenbytes << std::endl;
-
-    {
-        #if defined(WIN32) || defined(_WIN64) || defined(__WATCOMC__) || defined(_WIN32) || defined(__WIN32__)
-        #pragma pack(1)
-        #endif
-
-        /*
-            WAV Structures
-        */
-        typedef struct
-        {
-            signed char id[4];
-            int 		size;
-        } RiffChunk;
-
-        struct
-        {
-            RiffChunk       chunk           __PACKED;
-            unsigned short	wFormatTag      __PACKED;    /* format type  */
-            unsigned short	nChannels       __PACKED;    /* number of channels (i.e. mono, stereo...)  */
-            unsigned int	nSamplesPerSec  __PACKED;    /* sample rate  */
-            unsigned int	nAvgBytesPerSec __PACKED;    /* for buffer estimation  */
-            unsigned short	nBlockAlign     __PACKED;    /* block size of data  */
-            unsigned short	wBitsPerSample  __PACKED;    /* number of bits per sample of mono data */
-        } __PACKED FmtChunk  = { {{'f','m','t',' '}, sizeof(FmtChunk) - sizeof(RiffChunk) }, 1, channels, (int)rate, (int)rate * channels * bits / 8, 1 * channels * bits / 8, bits };
-
-        struct
-        {
-            RiffChunk   chunk;
-        } DataChunk = { {{'d','a','t','a'}, lenbytes } };
-
-        struct
-        {
-            RiffChunk   chunk;
-            signed char rifftype[4];
-        } WavHeader = { {{'R','I','F','F'}, sizeof(FmtChunk) + sizeof(RiffChunk) + lenbytes }, {'W','A','V','E'} };
-
-        #if defined(WIN32) || defined(_WIN64) || defined(__WATCOMC__) || defined(_WIN32) || defined(__WIN32__)
-        #pragma pack()
-        #endif
-
-        fp = fopen( file_name, "wb");
-
-        /*
-            Write out the WAV header.
-        */
-        fwrite(&WavHeader, sizeof(WavHeader), 1, fp);
-        fwrite(&FmtChunk, sizeof(FmtChunk), 1, fp);
-        fwrite(&DataChunk, sizeof(DataChunk), 1, fp);
-
-        /*
-            Lock the sound to get access to the raw data.
-        */
-        sound->lock(0, lenbytes, &ptr1, &ptr2, &len1, &len2);
-
-        /*
-            Write it to disk.
-        */
-        fwrite(ptr1, len1, 1, fp);
-
-        /*
-            Unlock the sound to allow FMOD to use it again.
-        */
-        sound->unlock(ptr1, ptr2, len1, len2);
-
-        fclose(fp);
-    }
-}
 
 //------------------------------------------------------------------------------------------
 
@@ -230,15 +133,34 @@ void MainWindow::updateInfoPanel( )
 
 void MainWindow::buttonPlaybackClicked( )
 {
-    // Make sure we have a none null sound object
+    if( state != IDLE )
+        return;
+
     if( sound == 0 )
-        return;
+    {
+        status = fmodSetup( &system );
 
-    // Make sure we are not already recording or playing
-    if( ui->buttonStop->isEnabled( ) )
-        return;
+        if( status != OK )
+        {
+            std::cout << "ERROR: fmodSetup failed! [" << status << "]" << std::endl;
+        }
 
-    setState( PLAYING );
+        status = fmodSystemInit( system );
+
+        if( status != OK )
+        {
+            std::cout << "ERROR: fmodSystemInit failed! [" << status << "]" << std::endl;
+        }
+
+        QString path = ui->editFilename->text( ) + ".wav";
+        status = fmodCreateSoundFromFile( system, &sound, path.toLocal8Bit( ).data( ) );
+
+        if( status != OK )
+        {
+            std::cout << "fmodCreateSoundFromFile failed! [" << status << "]" << std::endl;
+            return;
+        }
+    }
 
     system->playSound( FMOD_CHANNEL_REUSE, sound, false, &channel );
 
@@ -284,6 +206,9 @@ void MainWindow::buttonRecordClicked( )
     {
         std::cout << "ERROR: fmodSystemInit failed! [" << status << "]" << std::endl;
     }
+
+    if( sound != 0 )
+        sound->release( );
 
     status = fmodCreateSound( system, &sound, ui->spinRecordLength->value( ) );
 
@@ -400,6 +325,14 @@ MainWindow::MainWindow(QWidget *parent) :
     for( unsigned i = 0; i < drivers.size( ); i++ )
     {
         ui->driverSelect->addItem( QString( drivers[ i ].c_str( ) ) );
+    }
+
+    drivers.clear( );
+    drivers = getDrivers( tempSystem, &status, false );
+
+    for( unsigned i = 0; i < drivers.size( ); i++ )
+    {
+        ui->driverSelectPlayback->addItem( QString( drivers[ i ].c_str( ) ) );
     }
 
     tempSystem->release( );
