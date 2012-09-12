@@ -104,6 +104,7 @@ void MainWindow::updateInfoPanel( )
         else
         {
             ui->labelLength->setText( QString::number( time->elapsed( ) ) );
+
         }
     }
     else if( state == PLAYING )
@@ -120,6 +121,11 @@ void MainWindow::updateInfoPanel( )
         else
         {
             ui->playbackProgress->setValue( ( unsigned )( ( ( float )elapsed / ( float )lastLength ) * 100 ) % 100 + 1 );
+
+            Pitch pitch;
+
+            fmodDetectPitch( system, channel, &pitch );
+            ui->labelSize->setText( QString::number( pitch.hz ) );
         }
     }
     else

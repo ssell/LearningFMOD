@@ -16,7 +16,11 @@
     #define __PACKED __attribute__((packed)) /* gcc packed */
 #endif
 
-#define MAX_NUM_CHANNELS      1
+#define MAX_NUM_CHANNELS  1
+#define OUTPUTRATE        48000
+#define SPECTRUMSIZE      8192
+#define SPECTRUMRANGE     ((float)OUTPUTRATE / 2.0f)      /* 0 to nyquist */
+#define BINSIZE           (SPECTRUMRANGE / (float)SPECTRUMSIZE)
 
 //------------------------------------------------------------------------------------------
 
@@ -32,7 +36,8 @@ enum STATUS
     DRIVER_COUNT_RETRIEVE_FAILED,
     DRIVER_FETCH_FAILED,
     SOUND_CREATION_FAILED,
-    SOUND_FROM_FILE_FAILED
+    SOUND_FROM_FILE_FAILED,
+    CHANNEL_SPECTRUM_READ_FAILED
 };
 
 enum OUTPUT_TYPE
@@ -49,6 +54,13 @@ enum FMOD_STATE
     PLAYING
 };
 
+struct Pitch
+{
+    float hz;
+    float noteHz;
+    const char* note;
+};
+
 void   DEBUG_OUT( const char* );
 STATUS fmodSetup( FMOD::System** system );
 STATUS fmodSystemInit( FMOD::System* system );
@@ -56,6 +68,7 @@ STATUS fmodCreateSound( FMOD::System* system, FMOD::Sound** sound, unsigned max_
 STATUS fmodCreateSoundFromFile( FMOD::System* system, FMOD::Sound** sound, const char* file );
 STATUS fmodSetOutputType( FMOD::System* system, OUTPUT_TYPE output = OSS );
 STATUS fmodSetPlaybackDriver( FMOD::System* system, unsigned playback_driver );
+STATUS fmodDetectPitch( FMOD::System* system, FMOD::Channel* channel, Pitch* pitch );
 
 void SaveToWav(FMOD::Sound *sound, const char* file_name );
 bool LoadFileIntoMemory( const char *name, void **buff, int *length );
